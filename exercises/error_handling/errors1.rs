@@ -5,18 +5,21 @@
 // instead of just sometimes returning `None`. Thankfully, Rust has a similar
 // construct to `Result` that can be used to express error conditions. Let's use
 // it!
+// 如果你传递一个空字符串，这个函数将拒绝生成要打印在名牌上的文本。
+// 如果它能解释问题所在，而不是有时返回 `None`，那就更好了。
+// 幸运的是，Rust 有一个类似于 `Result` 的结构，可以用来表示错误情况。让我们使用它吧！
 //
 // Execute `rustlings hint errors1` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+// I AM DONE
 
-pub fn generate_nametag_text(name: String) -> Option<String> {
+pub fn generate_nametag_text(name: String) -> Result<String, String> {
     if name.is_empty() {
         // Empty names aren't allowed.
-        None
+        Err("`name` was empty; it must be nonempty.".into())
     } else {
-        Some(format!("Hi! My name is {}", name))
+        Ok(format!("Hi! My name is {}", name))
     }
 }
 
