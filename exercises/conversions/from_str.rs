@@ -31,7 +31,7 @@ enum ParsePersonError {
     ParseInt(ParseIntError),
 }
 
-// I AM NOT DONE
+// I AM DONE
 
 // Steps:
 // 1. If the length of the provided string is 0, an error should be returned
@@ -48,10 +48,37 @@ enum ParsePersonError {
 // As an aside: `Box<dyn Error>` implements `From<&'_ str>`. This means that if
 // you want to return a string error message, you can do so via just using
 // return `Err("my error message".into())`.
+// 步骤：
+// 1. 如果提供的字符串长度为 0，则应返回一个错误
+// 2. 在给定字符串中以逗号为分隔符进行拆分
+// 3. 拆分操作应返回且仅返回 2 个元素，否则返回一个错误
+// 4. 从拆分操作中提取第一个元素，并将其用作名称
+// 5. 从拆分操作中提取另一个元素，并将其解析为 `usize` 类型的年龄，例如使用 `"4".parse::<usize>()`
+// 6. 如果在提取名称和年龄时出现问题，则应返回一个错误
+// 如果一切顺利，则返回一个包含 Person 对象的 Result
+//
+// 顺便提一下：`Box<dyn Error>` 实现了 `From<&'_ str>`。
+// 这意味着如果你想返回一个字符串错误消息，你可以通过使用 `Err("my error message".into())` 来实现。
 
 impl FromStr for Person {
     type Err = ParsePersonError;
     fn from_str(s: &str) -> Result<Person, Self::Err> {
+        if s.len() == 0 {
+            return Err(ParsePersonError::Empty);
+        }
+        let parts: Vec<&str> = s.split(',').collect();
+        if parts.len() != 2 {
+            return Err(ParsePersonError::BadLen);
+        }
+        let name = parts.get(0).unwrap_or(&"").to_string();
+        if name.len() == 0 {
+            return Err(ParsePersonError::NoName);
+        }
+        let age = parts.get(1).unwrap_or(&"").parse::<usize>().map_err(ParsePersonError::ParseInt);
+        match age {
+            Ok(age) => Ok(Person { name, age }),
+            Err(e) => Err(e),
+        }
     }
 }
 

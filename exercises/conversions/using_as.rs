@@ -6,15 +6,19 @@
 //
 // The goal is to make sure that the division does not fail to compile and
 // returns the proper type.
+// 在 Rust 中，类型转换是通过使用 `as` 操作符完成的。请注意，`as` 操作符不仅用于类型转换。
+// 它还可以帮助重命名导入项。
+//
+// 目标是确保除法操作不会编译失败，并返回正确的类型。
 //
 // Execute `rustlings hint using_as` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
+// I AM DONE
 
 fn average(values: &[f64]) -> f64 {
     let total = values.iter().sum::<f64>();
-    total / values.len()
+    total / values.len() as f64
 }
 
 fn main() {

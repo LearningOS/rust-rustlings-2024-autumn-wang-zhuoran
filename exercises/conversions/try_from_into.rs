@@ -5,6 +5,9 @@
 // difference is that this should return a Result type instead of the target
 // type itself. You can read more about it at
 // https://doc.rust-lang.org/std/convert/trait.TryFrom.html
+// TryFrom 是一种简单且安全的类型转换，在某些情况下可能会以受控的方式失败。
+// 基本上，这与 From 是相同的。主要区别在于它应该返回一个 Result 类型，而不是目标类型本身。
+// 你可以在 https://doc.rust-lang.org/std/convert/trait.TryFrom.html 阅读更多相关信息。
 //
 // Execute `rustlings hint try_from_into` or use the `hint` watch subcommand for
 // a hint.
@@ -27,7 +30,7 @@ enum IntoColorError {
     IntConversion,
 }
 
-// I AM NOT DONE
+// I AM DONE
 
 // Your task is to complete this implementation and return an Ok result of inner
 // type Color. You need to create an implementation for a tuple of three
@@ -36,11 +39,25 @@ enum IntoColorError {
 // Note that the implementation for tuple and array will be checked at compile
 // time, but the slice implementation needs to check the slice length! Also note
 // that correct RGB color values must be integers in the 0..=255 range.
+// 你的任务是完成这个实现，并返回一个内部类型为 Color 的 Ok 结果。
+// 你需要为包含三个整数的元组、包含三个整数的数组和整数切片创建实现。
+//
+// 请注意，元组和数组的实现将在编译时检查，但切片实现需要检查切片长度！
+// 还要注意，正确的 RGB 颜色值必须是 0..=255 范围内的整数。
 
 // Tuple implementation
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        if tuple.0 < 0 || tuple.0 > 255 || tuple.1 < 0 || tuple.1 > 255 || tuple.2 < 0 || tuple.2 > 255 {
+            return Err(IntoColorError::IntConversion);
+        } else {
+            Ok(Color {
+                red: tuple.0 as u8,
+                green: tuple.1 as u8,
+                blue: tuple.2 as u8,
+            })
+        }
     }
 }
 
@@ -48,6 +65,15 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        if arr.iter().any(|&x| x < 0 || x > 255) {
+            return Err(IntoColorError::IntConversion);
+        } else {
+            Ok(Color {
+                red: arr[0] as u8,
+                green: arr[1] as u8,
+                blue: arr[2] as u8,
+            })
+        }
     }
 }
 
@@ -55,6 +81,18 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        if slice.len() != 3 {
+            return Err(IntoColorError::BadLen);
+        }
+        if slice.iter().any(|&x| x < 0 || x > 255) {
+            return Err(IntoColorError::IntConversion);
+        } else {
+            Ok(Color {
+                red: slice[0] as u8,
+                green: slice[1] as u8,
+                blue: slice[2] as u8,
+            })
+        }
     }
 }
 
