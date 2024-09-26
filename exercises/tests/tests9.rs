@@ -26,6 +26,24 @@
 // line of code in the testcase should call the same function.
 //
 // You should NOT modify any existing code except for adding two lines of attributes.
+// Rust 非常擅长与 C/C++ 和其他静态编译语言共享 FFI 接口，甚至可以在代码内部链接！
+// 它通过 extern 块实现，就像下面的代码一样。
+//
+// `extern` 关键字后的短字符串表示外部导入函数将遵循的 ABI。在这个练习中，使用 "Rust"，
+// 而其他变体如 "C" 表示标准 C ABI，"stdcall" 表示 Windows ABI。
+//
+// 外部导入的函数在 extern 块中声明，以分号标记签名的结束，而不是花括号。
+// 一些属性可以应用于这些函数声明以修改链接行为，例如 #[link_name = ".."] 来修改实际的符号名称。
+//
+// 如果你想将你的符号导出到链接环境中，可以在函数定义前标记 `extern` 关键字，并带有相同的 ABI 字符串注释。
+// Rust 函数的默认 ABI 实际上是 "Rust"，所以如果你想链接纯 Rust 函数，可以省略整个 extern 术语。
+//
+// Rust 默认会对符号进行重整，就像 C++ 一样。要抑制这种行为并使这些函数可以通过名称寻址，可以应用属性 #[no_mangle]。
+//
+// 在这个练习中，你的任务是使测试用例能够调用模块 Foo 中的 `my_demo_function`。
+// `my_demo_function_alias` 是 `my_demo_function` 的别名，所以测试用例中的两行代码应该调用同一个函数。
+//
+// 你不应该修改任何现有代码，除了添加两行属性。
 
 // I AM NOT DONE
 
@@ -36,8 +54,15 @@ extern "Rust" {
 
 mod Foo {
     // No `extern` equals `extern "Rust"`.
+    #[no_mangle]
     fn my_demo_function(a: u32) -> u32 {
         a
+    }
+
+    #[no_mangle]
+    #[link_name = "my_demo_function"]
+    pub fn my_demo_function_alias(a: u32) -> u32 {
+        my_demo_function(a)
     }
 }
 

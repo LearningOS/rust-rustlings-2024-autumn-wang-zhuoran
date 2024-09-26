@@ -9,10 +9,16 @@
 // This exercise is meant to show you what to expect when passing data to Cow.
 // Fix the unit tests by checking for Cow::Owned(_) and Cow::Borrowed(_) at the
 // TODO markers.
+// 这个练习探讨了 Cow（Clone-On-Write）类型。Cow 是一种写时克隆的智能指针。
+// 它可以封装并提供对借用数据的不可变访问，并在需要修改或所有权时懒惰地克隆数据。
+// 该类型设计为通过 Borrow trait 与一般借用数据一起工作。
+//
+// 这个练习旨在向你展示将数据传递给 Cow 时会发生什么。
+// 通过在 TODO 标记处检查 Cow::Owned(_) 和 Cow::Borrowed(_) 来修复单元测试。
 //
 // Execute `rustlings hint cow1` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
+// I AM DONE
 
 use std::borrow::Cow;
 
@@ -48,7 +54,8 @@ mod tests {
         let slice = [0, 1, 2];
         let mut input = Cow::from(&slice[..]);
         match abs_all(&mut input) {
-            // TODO
+            Cow::Borrowed(_) => Ok(()),
+            _ => Err("Expected borrowed value"),
         }
     }
 
@@ -60,7 +67,8 @@ mod tests {
         let slice = vec![0, 1, 2];
         let mut input = Cow::from(slice);
         match abs_all(&mut input) {
-            // TODO
+            Cow::Owned(_) => Ok(()),
+            _ => Err("Expected owned value"),
         }
     }
 
@@ -72,7 +80,8 @@ mod tests {
         let slice = vec![-1, 0, 1];
         let mut input = Cow::from(slice);
         match abs_all(&mut input) {
-            // TODO
+            Cow::Owned(_) => Ok(()),
+            _ => Err("Expected owned value"),
         }
     }
 }
