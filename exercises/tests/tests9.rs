@@ -45,7 +45,7 @@
 //
 // 你不应该修改任何现有代码，除了添加两行属性。
 
-// I AM NOT DONE
+// I AM DONE
 
 extern "Rust" {
     fn my_demo_function(a: u32) -> u32;
